@@ -619,6 +619,22 @@ describe('useminPrepare', function () {
     assert.equal(copyCfg.generated.files[0].dest, path.normalize('dist/scripts/plugins.js'));
   });
 
+  it('should allow query string in url', function () {
+    grunt.log.muted = true;
+    grunt.config.init();
+    grunt.config('useminPrepare', {
+      html: 'index.html'
+    });
+    grunt.file.copy(path.join(__dirname, 'fixtures/block_with_query_string_in_url.html'), 'index.html');
+    grunt.task.run('useminPrepare');
+    grunt.task.start();
+
+    var concatCfg = grunt.config('concat');
+    assert.ok(concatCfg);
+    assert.equal(concatCfg.generated.files[0].dest, path.normalize('.tmp/concat/foo.js'));
+    assert.deepEqual(concatCfg.generated.files[0].src, [path.normalize('baz.js')]);
+  });
+
   it('should allow to post configure generated steps', function () {
 
     var concatPostConfig = {
